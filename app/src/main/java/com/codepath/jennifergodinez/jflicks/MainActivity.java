@@ -1,6 +1,9 @@
 package com.codepath.jennifergodinez.jflicks;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
@@ -27,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // customize action bar
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar_title);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#004D40")));
 
         lvMovies = (ListView)findViewById(R.id.lvMovies);
         movies = new ArrayList<Movie>();
