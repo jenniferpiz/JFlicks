@@ -22,39 +22,43 @@ import java.util.List;
  */
 
 public class MovieArrayAdapter extends ArrayAdapter<Movie>{
+    ViewHolder viewHolderMorePop, viewHolderLessPop;
+    final static int POPULAR = 0;
+    final static int LESSPOPULAR = 1;
 
     // View lookup cache
     private static class ViewHolder {
+        ImageView poster;
+    }
+
+    // View lookup cache
+    private static class LessViewHolder extends ViewHolder {
         TextView title;
         TextView overview;
-        ImageView poster;
-        ImageView backdrop;
         RatingBar rating;
     }
 
-    public enum MovieTypes {
-        POPULAR, UNPOPULAR
-    }
 
     public MovieArrayAdapter(@NonNull Context context, @NonNull List<Movie> objects) {
         super(context, android.R.layout.simple_list_item_1, objects);
     }
 
-    /*
+
     @Override
     public int getViewTypeCount() {
         // since we are only checking of rating >5 there are only 2 types of views
-        return MovieTypes.values().length;
+        return 2;
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        Movie m = getItem(position);
-        if (Integer.parseInt(m.getVoteAvg())>5) return MovieTypes.POPULAR.ordinal();
-        else return MovieTypes.POPULAR.ordinal();
+        if (isPopular(getItem(position))) {
+            return POPULAR;
+        }
+        return LESSPOPULAR;
     }
-*/
+
 
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
@@ -62,13 +66,19 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         Movie movie = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            viewHolder = new ViewHolder();
-
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
-            viewHolder.title = convertView.findViewById(R.id.tvTitle);
-            viewHolder.overview = convertView.findViewById(R.id.tvOverview);
+            int type = getItemViewType(position);
+            //convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
+            convertView = getInflatedLayoutForType(type);
+            if (type == LESSPOPULAR) {
+                viewHolder = new LessViewHolder();
+                ((LessViewHolder)viewHolder).title = convertView.findViewById(R.id.tvTitle);
+                ((LessViewHolder)viewHolder).overview = convertView.findViewById(R.id.tvOverview);
+                ((LessViewHolder)viewHolder).rating = convertView.findViewById(R.id.ratingVote);
+            } else  {
+                viewHolder = new ViewHolder();
+            }
             viewHolder.poster = convertView.findViewById(R.id.imgPoster);
-            viewHolder.rating = convertView.findViewById(R.id.ratingVote);
+
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
 
@@ -77,13 +87,16 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         }
 
         // Populate the data into the template view using the data object
-        viewHolder.title.setText(movie.getTitle());
-        viewHolder.overview.setText(movie.getOverview());//imgPoster.setImageURI(new URL(movie.getPosterPath()));
+        if (viewHolder instanceof LessViewHolder) {
+            ((LessViewHolder)viewHolder).title.setText(movie.getTitle());
+            ((LessViewHolder)viewHolder).overview.setText(movie.getOverview());
+            ((LessViewHolder)viewHolder).rating.setRating(Float.parseFloat(movie.getVoteAvg()));
+        }
         viewHolder.poster.setImageResource(0);
-        viewHolder.rating.setRating(Float.parseFloat(movie.getVoteAvg()));
-        if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Picasso.with(getContext()).load(movie.getBackdropPath()).fit().centerCrop().placeholder(R.drawable.img_placeholder_land).into(viewHolder.poster);
-        } else if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+        if (isPopular(movie) || getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Picasso.with(getContext()).load(movie.getBackdropPath()).fit().centerInside().placeholder(R.drawable.img_placeholder_land).into(viewHolder.poster);
+        } else {//if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             Picasso.with(getContext()).load(movie.getPosterPath()).fit().centerCrop().placeholder(R.drawable.img_placeholder_port).into(viewHolder.poster);
         }
 
@@ -91,13 +104,25 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         return convertView;
     }
 
-    /* Given the item type, responsible for returning the correct inflated XML layout file
-    private View getInflatedLayoutForType(int type) {
-        if (type == MovieTypes.POPULAR.ordinal()) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.item_blue_color, null);
+    private boolean isPopular(Movie movie) {
+        return (Float.parseFloat(movie.getVoteAvg()) > 5.0);
+    }
+
+    private String getMovieImage(Movie movie) {
+        if (isPopular(movie)) {
+            return movie.getBackdropPath();
         } else {
-            return LayoutInflater.from(getContext()).inflate(R.layout.item_red_color, null);
+            return movie.getPosterPath();
         }
     }
-*/
+
+    private View getInflatedLayoutForType(int type) {
+        if (type == POPULAR) {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, null);
+        } else {
+            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie, null);
+        }
+    }
+
+
 }
