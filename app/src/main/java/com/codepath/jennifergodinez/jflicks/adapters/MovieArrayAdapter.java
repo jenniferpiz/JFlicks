@@ -22,11 +22,10 @@ import java.util.List;
  */
 
 public class MovieArrayAdapter extends ArrayAdapter<Movie>{
-    ViewHolder viewHolderMorePop, viewHolderLessPop;
     final static int POPULAR = 0;
     final static int LESSPOPULAR = 1;
 
-    // View lookup cache
+    // View lookup cache for popular movies
     private static class ViewHolder {
         ImageView poster;
     }
@@ -46,7 +45,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
 
     @Override
     public int getViewTypeCount() {
-        // since we are only checking of rating >5 there are only 2 types of views
+        // since we are only checking if popular or not, there are only 2 types of views
         return 2;
     }
 
@@ -94,9 +93,11 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         }
         viewHolder.poster.setImageResource(0);
 
-        if (isPopular(movie) || getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (isPopular(movie)) {
+            Picasso.with(getContext()).load(movie.getBackdropPath()).fit().centerInside().placeholder(R.drawable.img_placeholder_popular).into(viewHolder.poster);
+        } else if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Picasso.with(getContext()).load(movie.getBackdropPath()).fit().centerInside().placeholder(R.drawable.img_placeholder_land).into(viewHolder.poster);
-        } else {//if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else { //if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             Picasso.with(getContext()).load(movie.getPosterPath()).fit().centerCrop().placeholder(R.drawable.img_placeholder_port).into(viewHolder.poster);
         }
 
@@ -106,14 +107,6 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
 
     private boolean isPopular(Movie movie) {
         return (Float.parseFloat(movie.getVoteAvg()) > 5.0);
-    }
-
-    private String getMovieImage(Movie movie) {
-        if (isPopular(movie)) {
-            return movie.getBackdropPath();
-        } else {
-            return movie.getPosterPath();
-        }
     }
 
     private View getInflatedLayoutForType(int type) {
