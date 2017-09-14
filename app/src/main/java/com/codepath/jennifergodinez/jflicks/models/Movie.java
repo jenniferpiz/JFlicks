@@ -26,6 +26,7 @@ public class Movie {
     String youtubeKey;
     String id;
 
+    public static String API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
     public String getTitle() {
         return title;
     }
@@ -42,16 +43,14 @@ public class Movie {
         return overview;
     }
 
-    public String getYouTubeKey() {
+    public String getYouTubeKey() { return youtubeKey; }
+
+
+    private String getKey() {
         if (youtubeKey == null) {
-            String url = "https://api.themoviedb.org/3/movie/" + id + "videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+            String url = "https://api.themoviedb.org/3/movie/" + id + "/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
             AsyncHttpClient client = new AsyncHttpClient();
             client.get(url, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    super.onSuccess(statusCode, headers, response);
-                    youtubeKey = "0";
-                }
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -60,7 +59,10 @@ public class Movie {
                     try {
                         trailerJsonResults = response.getJSONArray("results");
                         Log.d("DEBUG", Integer.toString(trailerJsonResults.length()));
-                        //youtubeKey = Movie.extractKey(trailerJsonResults));
+                        if (trailerJsonResults.length() > 0) {
+                            JSONObject trailer = (JSONObject)trailerJsonResults.get(0);
+                            youtubeKey = trailer.getString("key");
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -87,7 +89,8 @@ public class Movie {
         this.posterPath = obj.getString("poster_path");
         this.voteAvg = obj.getString("vote_average");
         this.backdropPath = obj.getString("backdrop_path");
-        this.youtubeKey = null;
+        this.id = obj.getString("id");
+        this.youtubeKey = getKey();
     }
 
     public static ArrayList<Movie> parseResults(JSONArray resultsArray) {

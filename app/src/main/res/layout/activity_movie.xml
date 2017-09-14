@@ -19,12 +19,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTitle"
-        style="@style/Widget.AppCompat.RatingBar.Small"
-        android:numStars="10"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp" />
 
-    <ImageView
+    <com.google.android.youtube.player.YouTubePlayerView
         android:id="@+id/player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
