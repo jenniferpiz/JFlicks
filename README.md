@@ -38,7 +38,8 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://i.imgur.com/Zl2gzzt.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![JFlicks](http://i.imgur.com/Js3WBzh.gif "Portrait")
+![JFlicks](http://i.imgur.com/uQSs7xi.gif "Landscape")
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
