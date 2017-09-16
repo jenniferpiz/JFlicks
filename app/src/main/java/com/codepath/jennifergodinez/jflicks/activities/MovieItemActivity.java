@@ -53,7 +53,7 @@ public class MovieItemActivity extends YouTubeBaseActivity {
         TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvTitle.setText(title);
         RatingBar rbRating = (RatingBar)findViewById(R.id.rbRating);
-        rbRating.setRating(Float.parseFloat(rating)/2);
+        rbRating.setRating(Float.parseFloat(rating));
         TextView tvOverview = (TextView)findViewById(R.id.tvOverview);
         tvOverview.setText(overview);
     }

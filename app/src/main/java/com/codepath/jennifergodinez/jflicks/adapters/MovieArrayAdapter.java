@@ -30,7 +30,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         ImageView poster;
     }
 
-    // View lookup cache
+    // View lookup cache for less popular movies
     private static class LessViewHolder extends ViewHolder {
         TextView title;
         TextView overview;
@@ -52,7 +52,7 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
 
     @Override
     public int getItemViewType(int position) {
-        if (isPopular(getItem(position))) {
+        if (getItem(position).isPopular()) {
             return POPULAR;
         }
         return LESSPOPULAR;
@@ -67,13 +67,15 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         if (convertView == null) {
             int type = getItemViewType(position);
             //convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
-            convertView = getInflatedLayoutForType(type);
+            //convertView = getInflatedLayoutForType(type);
             if (type == LESSPOPULAR) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
                 viewHolder = new LessViewHolder();
                 ((LessViewHolder)viewHolder).title = convertView.findViewById(R.id.tvTitle);
                 ((LessViewHolder)viewHolder).overview = convertView.findViewById(R.id.tvOverview);
-                ((LessViewHolder)viewHolder).rating = convertView.findViewById(R.id.ratingVote);
+                //((LessViewHolder)viewHolder).rating = convertView.findViewById(R.id.ratingVote);
             } else  {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, parent, false);
                 viewHolder = new ViewHolder();
             }
             viewHolder.poster = convertView.findViewById(R.id.imgPoster);
@@ -89,11 +91,11 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         if (viewHolder instanceof LessViewHolder) {
             ((LessViewHolder)viewHolder).title.setText(movie.getTitle());
             ((LessViewHolder)viewHolder).overview.setText(movie.getOverview());
-            ((LessViewHolder)viewHolder).rating.setRating(Float.parseFloat(movie.getVoteAvg()));
+            //((LessViewHolder)viewHolder).rating.setRating(Float.parseFloat(movie.getVoteAvg()));
         }
         viewHolder.poster.setImageResource(0);
 
-        if (isPopular(movie)) {
+        if (movie.isPopular()) {
             Picasso.with(getContext()).load(movie.getBackdropPath()).fit().centerInside().placeholder(R.drawable.img_placeholder_popular).into(viewHolder.poster);
         } else if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Picasso.with(getContext()).load(movie.getBackdropPath()).fit().centerInside().placeholder(R.drawable.img_placeholder_land).into(viewHolder.poster);
@@ -104,18 +106,5 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         // Return the completed view to render on screen
         return convertView;
     }
-
-    private boolean isPopular(Movie movie) {
-        return (Float.parseFloat(movie.getVoteAvg()) > 5.0);
-    }
-
-    private View getInflatedLayoutForType(int type) {
-        if (type == POPULAR) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, null);
-        } else {
-            return LayoutInflater.from(getContext()).inflate(R.layout.item_movie, null);
-        }
-    }
-
 
 }

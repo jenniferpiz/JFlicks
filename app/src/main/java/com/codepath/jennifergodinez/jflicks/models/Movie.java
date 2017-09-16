@@ -105,4 +105,8 @@ public class Movie {
         }
         return results;
     }
+
+    public boolean isPopular() {
+        return (Float.parseFloat(this.getVoteAvg()) > 5.0);
+    }
 }

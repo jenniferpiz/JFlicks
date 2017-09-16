@@ -8,8 +8,9 @@
         android:id="@+id/lvMovies"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="10.0sp"
+        android:scrollbars="none"
+        android:background="#0F0F0F"
+        android:dividerHeight="20.0sp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
