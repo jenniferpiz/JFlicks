@@ -27,6 +27,17 @@ public class Movie {
     String id;
 
     public static String API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
+
+    public Movie (JSONObject obj) throws JSONException {
+        this.title = obj.getString("title");
+        this.overview = obj.getString("overview");
+        this.posterPath = obj.getString("poster_path");
+        this.voteAvg = obj.getString("vote_average");
+        this.backdropPath = obj.getString("backdrop_path");
+        this.id = obj.getString("id");
+        this.youtubeKey = getKey();
+    }
+
     public String getTitle() {
         return title;
     }
@@ -45,10 +56,31 @@ public class Movie {
 
     public String getYouTubeKey() { return youtubeKey; }
 
+    public String getBackdropPath() {
+        return "https://image.tmdb.org/t/p/w342"+backdropPath;
+    }
+
+
+    public static ArrayList<Movie> parseResults(JSONArray resultsArray) {
+        ArrayList<Movie> results = new ArrayList<>();
+
+        for (int i=0; i<resultsArray.length(); i++) {
+            try {
+                results.add(new Movie(resultsArray.getJSONObject(i)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return results;
+    }
+
+    public boolean isPopular() {
+        return (Float.parseFloat(this.getVoteAvg()) > 5.0);
+    }
 
     private String getKey() {
         if (youtubeKey == null) {
-            String url = "https://api.themoviedb.org/3/movie/" + id + "/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+            String url = "https://api.themoviedb.org/3/movie/" + id + "/videos?api_key="+API_KEY;
             AsyncHttpClient client = new AsyncHttpClient();
             client.get(url, new JsonHttpResponseHandler() {
 
@@ -78,35 +110,4 @@ public class Movie {
         return youtubeKey;
     }
 
-
-    public String getBackdropPath() {
-        return "https://image.tmdb.org/t/p/w342"+backdropPath;
-    }
-
-    public Movie (JSONObject obj) throws JSONException {
-        this.title = obj.getString("title");
-        this.overview = obj.getString("overview");
-        this.posterPath = obj.getString("poster_path");
-        this.voteAvg = obj.getString("vote_average");
-        this.backdropPath = obj.getString("backdrop_path");
-        this.id = obj.getString("id");
-        this.youtubeKey = getKey();
-    }
-
-    public static ArrayList<Movie> parseResults(JSONArray resultsArray) {
-        ArrayList<Movie> results = new ArrayList<>();
-
-        for (int i=0; i<resultsArray.length(); i++) {
-            try {
-                results.add(new Movie(resultsArray.getJSONObject(i)));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return results;
-    }
-
-    public boolean isPopular() {
-        return (Float.parseFloat(this.getVoteAvg()) > 5.0);
-    }
 }

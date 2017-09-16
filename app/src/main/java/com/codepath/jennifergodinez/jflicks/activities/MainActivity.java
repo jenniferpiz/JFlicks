@@ -1,4 +1,4 @@
-package com.codepath.jennifergodinez.jflicks;
+package com.codepath.jennifergodinez.jflicks.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.codepath.jennifergodinez.jflicks.activities.MovieItemActivity;
+import com.codepath.jennifergodinez.jflicks.R;
 import com.codepath.jennifergodinez.jflicks.adapters.MovieArrayAdapter;
 import com.codepath.jennifergodinez.jflicks.models.Movie;
 import com.loopj.android.http.AsyncHttpClient;

@@ -54,8 +54,9 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
     public int getItemViewType(int position) {
         if (getItem(position).isPopular()) {
             return POPULAR;
+        } else {
+            return LESSPOPULAR;
         }
-        return LESSPOPULAR;
     }
 
 
@@ -66,14 +67,11 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             int type = getItemViewType(position);
-            //convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
-            //convertView = getInflatedLayoutForType(type);
             if (type == LESSPOPULAR) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie, parent, false);
                 viewHolder = new LessViewHolder();
                 ((LessViewHolder)viewHolder).title = convertView.findViewById(R.id.tvTitle);
                 ((LessViewHolder)viewHolder).overview = convertView.findViewById(R.id.tvOverview);
-                //((LessViewHolder)viewHolder).rating = convertView.findViewById(R.id.ratingVote);
             } else  {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_movie_popular, parent, false);
                 viewHolder = new ViewHolder();
@@ -91,10 +89,10 @@ public class MovieArrayAdapter extends ArrayAdapter<Movie>{
         if (viewHolder instanceof LessViewHolder) {
             ((LessViewHolder)viewHolder).title.setText(movie.getTitle());
             ((LessViewHolder)viewHolder).overview.setText(movie.getOverview());
-            //((LessViewHolder)viewHolder).rating.setRating(Float.parseFloat(movie.getVoteAvg()));
         }
         viewHolder.poster.setImageResource(0);
 
+        //use different placeholders for popular and orientations.  Less popular have smaller placeholders.
         if (movie.isPopular()) {
             Picasso.with(getContext()).load(movie.getBackdropPath()).fit().centerInside().placeholder(R.drawable.img_placeholder_popular).into(viewHolder.poster);
         } else if (getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
