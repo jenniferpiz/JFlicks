@@ -38,7 +38,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-![JFlicks](http://i.imgur.com/SaulLvj.gif "Portrait")
+![JFlicks](http://i.imgur.com/1wzyqUH.gif "Portrait")
 ![JFlicks](http://i.imgur.com/qSg8gMK.gif "Landscape")
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
