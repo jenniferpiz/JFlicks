@@ -79,12 +79,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View v, int pos, long id) {
                 Movie movie = (Movie) adapterView.getItemAtPosition(pos);
-                launchMovieActivity(movie);
-
+                if (movie.isPopular()) {
+                    launchPopularMovieActivity(movie);
+                } else {
+                    launchMovieActivity(movie);
+                }
             }
         });
     }
 
+    private void launchPopularMovieActivity(Movie movie) {
+        Intent i = new Intent(MainActivity.this, MovieFullScreenActivity.class);
+        i.putExtra("youtubeKey", movie.getYouTubeKey());
+        startActivity(i);
+    }
 
     private void launchMovieActivity(Movie movie) {
         Intent i = new Intent(MainActivity.this, MovieItemActivity.class);
